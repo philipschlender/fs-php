@@ -53,5 +53,15 @@ interface StreamInterface
     /**
      * @throws FsException
      */
+    public function lock(bool $block = true): void;
+
+    /**
+     * @throws FsException
+     */
+    public function unlock(): void;
+
+    /**
+     * @throws FsException
+     */
     public function close(): void;
 }
