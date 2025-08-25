@@ -139,7 +139,7 @@ class FsService implements FsServiceInterface
         $pathDirectory = pathinfo($path, PATHINFO_DIRNAME);
 
         if (!$this->isDirectory($pathDirectory)) {
-            $this->makeDirectory($pathDirectory);
+            throw new FsException(sprintf('The path %s must exist.', $pathDirectory));
         }
 
         if (!touch($path, $modificationTime, $accessTime)) {

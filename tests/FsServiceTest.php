@@ -258,7 +258,7 @@ class FsServiceTest extends FsTestCase
     #[DataProvider('dataProviderTouchFile')]
     public function testTouchFile(?int $modificationTime = null, ?int $accessTime = null): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile(1));
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
 
         $time = time();
 
@@ -324,6 +324,38 @@ class FsServiceTest extends FsTestCase
         $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
 
         $this->fsService->touch($file, null, 0);
+    }
+
+    #[DataProvider('dataProviderTouchPathMustExist')]
+    public function testTouchPathMustExist(bool $isDirectory): void
+    {
+        $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
+
+        if ($isDirectory) {
+            $path = sprintf('%s/%s', $directory, $this->fakerService->getFs()->randomDirectory());
+        } else {
+            $path = sprintf('%s/%s', $directory, $this->fakerService->getFs()->randomFile());
+        }
+
+        $this->expectException(FsException::class);
+        $this->expectExceptionMessage(sprintf('The path %s must exist.', $directory));
+
+        $this->fsService->touch($path);
+    }
+
+    /**
+     * @return array<int,array<string,bool>>
+     */
+    public static function dataProviderTouchPathMustExist(): array
+    {
+        return [
+            [
+                'isDirectory' => true,
+            ],
+            [
+                'isDirectory' => false,
+            ],
+        ];
     }
 
     public function testRemoveDirectory(): void
