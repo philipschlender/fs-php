@@ -176,7 +176,7 @@ class FsServiceTest extends FsTestCase
 
     public function testWriteFile(): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile(1));
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
 
         $expectedData = $this->fakerService->getLorem()->randomText();
 
@@ -197,6 +197,17 @@ class FsServiceTest extends FsTestCase
         $this->expectExceptionMessage(sprintf('The path %s already exists.', $file));
 
         $this->fsService->writeFile($file, $this->fakerService->getLorem()->randomText());
+
+        $this->fsService->writeFile($file, $this->fakerService->getLorem()->randomText());
+    }
+
+    public function testWriteFilePathMustExist(): void
+    {
+        $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
+        $file = sprintf('%s/%s', $directory, $this->fakerService->getFs()->randomFile());
+
+        $this->expectException(FsException::class);
+        $this->expectExceptionMessage(sprintf('The path %s must exist.', $directory));
 
         $this->fsService->writeFile($file, $this->fakerService->getLorem()->randomText());
     }
