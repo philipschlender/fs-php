@@ -178,6 +178,12 @@ class FsService implements FsServiceInterface
             throw new FsException(sprintf('The target path %s already exists.', $targetPath));
         }
 
+        $targetPathDirectory = pathinfo($targetPath, PATHINFO_DIRNAME);
+
+        if (!$this->isDirectory($targetPathDirectory)) {
+            throw new FsException(sprintf('The target path %s must exist.', $targetPathDirectory));
+        }
+
         if ($this->isDirectory($sourcePath)) {
             $this->copyDirectory($sourcePath, $targetPath);
 
