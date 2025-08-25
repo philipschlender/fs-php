@@ -206,13 +206,13 @@ class FsService implements FsServiceInterface
             throw new FsException(sprintf('The target path %s already exists.', $targetPath));
         }
 
-        $type = $this->isDirectory($sourcePath) ? 'directory' : 'file';
-
         $targetPathDirectory = pathinfo($targetPath, PATHINFO_DIRNAME);
 
         if (!$this->isDirectory($targetPathDirectory)) {
-            $this->makeDirectory($targetPathDirectory);
+            throw new FsException(sprintf('The target path %s must exist.', $targetPathDirectory));
         }
+
+        $type = $this->isDirectory($sourcePath) ? 'directory' : 'file';
 
         if (!rename($sourcePath, $targetPath)) {
             throw new FsException(sprintf('Failed to move the %s %s to %s.', $type, $sourcePath, $targetPath));
