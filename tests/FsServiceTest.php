@@ -176,7 +176,7 @@ class FsServiceTest extends FsTestCase
 
     public function testWriteFile(): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile(1));
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
 
         $expectedData = $this->fakerService->getLorem()->randomText();
 
@@ -197,6 +197,17 @@ class FsServiceTest extends FsTestCase
         $this->expectExceptionMessage(sprintf('The path %s already exists.', $file));
 
         $this->fsService->writeFile($file, $this->fakerService->getLorem()->randomText());
+
+        $this->fsService->writeFile($file, $this->fakerService->getLorem()->randomText());
+    }
+
+    public function testWriteFilePathMustExist(): void
+    {
+        $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
+        $file = sprintf('%s/%s', $directory, $this->fakerService->getFs()->randomFile());
+
+        $this->expectException(FsException::class);
+        $this->expectExceptionMessage(sprintf('The path %s must exist.', $directory));
 
         $this->fsService->writeFile($file, $this->fakerService->getLorem()->randomText());
     }
@@ -247,7 +258,7 @@ class FsServiceTest extends FsTestCase
     #[DataProvider('dataProviderTouchFile')]
     public function testTouchFile(?int $modificationTime = null, ?int $accessTime = null): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile(1));
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
 
         $time = time();
 
@@ -313,6 +324,38 @@ class FsServiceTest extends FsTestCase
         $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
 
         $this->fsService->touch($file, null, 0);
+    }
+
+    #[DataProvider('dataProviderTouchPathMustExist')]
+    public function testTouchPathMustExist(bool $isDirectory): void
+    {
+        $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
+
+        if ($isDirectory) {
+            $path = sprintf('%s/%s', $directory, $this->fakerService->getFs()->randomDirectory());
+        } else {
+            $path = sprintf('%s/%s', $directory, $this->fakerService->getFs()->randomFile());
+        }
+
+        $this->expectException(FsException::class);
+        $this->expectExceptionMessage(sprintf('The path %s must exist.', $directory));
+
+        $this->fsService->touch($path);
+    }
+
+    /**
+     * @return array<int,array<string,bool>>
+     */
+    public static function dataProviderTouchPathMustExist(): array
+    {
+        return [
+            [
+                'isDirectory' => true,
+            ],
+            [
+                'isDirectory' => false,
+            ],
+        ];
     }
 
     public function testRemoveDirectory(): void
@@ -383,7 +426,7 @@ class FsServiceTest extends FsTestCase
         $sourceDirectory2 = sprintf('%s/%s', $sourceDirectory1, $this->fakerService->getFs()->randomDirectory());
         $sourceFile2 = sprintf('%s/%s', $sourceDirectory2, $this->fakerService->getFs()->randomFile());
 
-        $targetDirectory1 = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory(2));
+        $targetDirectory1 = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
         $targetFile1 = str_replace($sourceDirectory1, $targetDirectory1, $sourceFile1);
         $targetDirectory2 = str_replace($sourceDirectory1, $targetDirectory1, $sourceDirectory2);
         $targetFile2 = str_replace($sourceDirectory2, $targetDirectory2, $sourceFile2);
@@ -412,7 +455,7 @@ class FsServiceTest extends FsTestCase
     public function testCopyFile(): void
     {
         $sourceFile = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
-        $targetFile = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile(1));
+        $targetFile = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
 
         $this->fsService->writeFile($sourceFile, $this->fakerService->getLorem()->randomText());
 
@@ -493,10 +536,48 @@ class FsServiceTest extends FsTestCase
         ];
     }
 
+    #[DataProvider('dataProviderCopyTargetPathMustExist')]
+    public function testCopyTargetPathMustExist(bool $isDirectory): void
+    {
+        $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
+
+        if ($isDirectory) {
+            $sourcePath = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
+            $targetPath = sprintf('%s/%s', $directory, $this->fakerService->getFs()->randomDirectory());
+
+            $this->fsService->makeDirectory($sourcePath);
+        } else {
+            $sourcePath = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+            $targetPath = sprintf('%s/%s', $directory, $this->fakerService->getFs()->randomFile());
+
+            $this->fsService->writeFile($sourcePath, $this->fakerService->getLorem()->randomText());
+        }
+
+        $this->expectException(FsException::class);
+        $this->expectExceptionMessage(sprintf('The target path %s must exist.', $directory));
+
+        $this->fsService->copy($sourcePath, $targetPath);
+    }
+
+    /**
+     * @return array<int,array<string,bool>>
+     */
+    public static function dataProviderCopyTargetPathMustExist(): array
+    {
+        return [
+            [
+                'isDirectory' => true,
+            ],
+            [
+                'isDirectory' => false,
+            ],
+        ];
+    }
+
     public function testMoveDirectory(): void
     {
         $sourceDirectory = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
-        $targetDirectory = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory(2));
+        $targetDirectory = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
 
         $this->fsService->makeDirectory($sourceDirectory);
 
@@ -512,7 +593,7 @@ class FsServiceTest extends FsTestCase
     public function testMoveFile(): void
     {
         $sourceFile = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
-        $targetFile = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile(1));
+        $targetFile = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
 
         $this->fsService->writeFile($sourceFile, $this->fakerService->getLorem()->randomText());
 
@@ -584,6 +665,44 @@ class FsServiceTest extends FsTestCase
      * @return array<int,array<string,bool>>
      */
     public static function dataProviderMoveTargetPathAlreadyExists(): array
+    {
+        return [
+            [
+                'isDirectory' => true,
+            ],
+            [
+                'isDirectory' => false,
+            ],
+        ];
+    }
+
+    #[DataProvider('dataProviderMoveTargetPathMustExist')]
+    public function testMoveTargetPathMustExist(bool $isDirectory): void
+    {
+        $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
+
+        if ($isDirectory) {
+            $sourcePath = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
+            $targetPath = sprintf('%s/%s', $directory, $this->fakerService->getFs()->randomDirectory());
+
+            $this->fsService->makeDirectory($sourcePath);
+        } else {
+            $sourcePath = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+            $targetPath = sprintf('%s/%s', $directory, $this->fakerService->getFs()->randomFile());
+
+            $this->fsService->writeFile($sourcePath, $this->fakerService->getLorem()->randomText());
+        }
+
+        $this->expectException(FsException::class);
+        $this->expectExceptionMessage(sprintf('The target path %s must exist.', $directory));
+
+        $this->fsService->move($sourcePath, $targetPath);
+    }
+
+    /**
+     * @return array<int,array<string,bool>>
+     */
+    public static function dataProviderMoveTargetPathMustExist(): array
     {
         return [
             [

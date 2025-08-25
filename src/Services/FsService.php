@@ -107,7 +107,7 @@ class FsService implements FsServiceInterface
         $pathDirectory = pathinfo($path, PATHINFO_DIRNAME);
 
         if (!$this->isDirectory($pathDirectory)) {
-            $this->makeDirectory($pathDirectory);
+            throw new FsException(sprintf('The path %s must exist.', $pathDirectory));
         }
 
         $stream = $this->openStream($path, Mode::Write);
@@ -139,7 +139,7 @@ class FsService implements FsServiceInterface
         $pathDirectory = pathinfo($path, PATHINFO_DIRNAME);
 
         if (!$this->isDirectory($pathDirectory)) {
-            $this->makeDirectory($pathDirectory);
+            throw new FsException(sprintf('The path %s must exist.', $pathDirectory));
         }
 
         if (!touch($path, $modificationTime, $accessTime)) {
@@ -178,6 +178,12 @@ class FsService implements FsServiceInterface
             throw new FsException(sprintf('The target path %s already exists.', $targetPath));
         }
 
+        $targetPathDirectory = pathinfo($targetPath, PATHINFO_DIRNAME);
+
+        if (!$this->isDirectory($targetPathDirectory)) {
+            throw new FsException(sprintf('The target path %s must exist.', $targetPathDirectory));
+        }
+
         if ($this->isDirectory($sourcePath)) {
             $this->copyDirectory($sourcePath, $targetPath);
 
@@ -200,13 +206,13 @@ class FsService implements FsServiceInterface
             throw new FsException(sprintf('The target path %s already exists.', $targetPath));
         }
 
-        $type = $this->isDirectory($sourcePath) ? 'directory' : 'file';
-
         $targetPathDirectory = pathinfo($targetPath, PATHINFO_DIRNAME);
 
         if (!$this->isDirectory($targetPathDirectory)) {
-            $this->makeDirectory($targetPathDirectory);
+            throw new FsException(sprintf('The target path %s must exist.', $targetPathDirectory));
         }
+
+        $type = $this->isDirectory($sourcePath) ? 'directory' : 'file';
 
         if (!rename($sourcePath, $targetPath)) {
             throw new FsException(sprintf('Failed to move the %s %s to %s.', $type, $sourcePath, $targetPath));
