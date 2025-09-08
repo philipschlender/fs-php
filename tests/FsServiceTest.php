@@ -27,11 +27,13 @@ class FsServiceTest extends FsTestCase
         $file1 = sprintf('%s/%s', $directory1, $this->fakerService->getFs()->randomFile());
         $directory2 = sprintf('%s/%s', $directory1, $this->fakerService->getFs()->randomDirectory());
         $file2 = sprintf('%s/%s', $directory2, $this->fakerService->getFs()->randomFile());
+        $directory3 = sprintf('%s/%s', $directory2, $this->fakerService->getFs()->randomDirectory());
 
         $this->fsService->makeDirectory($directory1);
         $this->fsService->writeFile($file1, $this->fakerService->getLorem()->randomText());
         $this->fsService->makeDirectory($directory2);
         $this->fsService->writeFile($file2, $this->fakerService->getLorem()->randomText());
+        $this->fsService->makeDirectory($directory3);
 
         if (!$recursive) {
             $expectedPaths = [
@@ -43,6 +45,7 @@ class FsServiceTest extends FsTestCase
                 $file1,
                 $directory2,
                 $file2,
+                $directory3,
             ];
         }
 
@@ -364,11 +367,13 @@ class FsServiceTest extends FsTestCase
         $file1 = sprintf('%s/%s', $directory1, $this->fakerService->getFs()->randomFile());
         $directory2 = sprintf('%s/%s', $directory1, $this->fakerService->getFs()->randomDirectory());
         $file2 = sprintf('%s/%s', $directory2, $this->fakerService->getFs()->randomFile());
+        $directory3 = sprintf('%s/%s', $directory2, $this->fakerService->getFs()->randomDirectory());
 
         $this->fsService->makeDirectory($directory1);
         $this->fsService->writeFile($file1, $this->fakerService->getLorem()->randomText());
         $this->fsService->makeDirectory($directory2);
         $this->fsService->writeFile($file2, $this->fakerService->getLorem()->randomText());
+        $this->fsService->makeDirectory($directory3);
 
         $this->fsService->remove($directory1);
 
@@ -376,6 +381,7 @@ class FsServiceTest extends FsTestCase
         $this->assertFalse($this->fsService->isFile($file1));
         $this->assertFalse($this->fsService->isDirectory($directory2));
         $this->assertFalse($this->fsService->isFile($file2));
+        $this->assertFalse($this->fsService->isDirectory($directory3));
     }
 
     public function testRemoveFile(): void
@@ -425,16 +431,19 @@ class FsServiceTest extends FsTestCase
         $sourceFile1 = sprintf('%s/%s', $sourceDirectory1, $this->fakerService->getFs()->randomFile());
         $sourceDirectory2 = sprintf('%s/%s', $sourceDirectory1, $this->fakerService->getFs()->randomDirectory());
         $sourceFile2 = sprintf('%s/%s', $sourceDirectory2, $this->fakerService->getFs()->randomFile());
+        $sourceDirectory3 = sprintf('%s/%s', $sourceDirectory2, $this->fakerService->getFs()->randomDirectory());
 
         $targetDirectory1 = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
         $targetFile1 = str_replace($sourceDirectory1, $targetDirectory1, $sourceFile1);
         $targetDirectory2 = str_replace($sourceDirectory1, $targetDirectory1, $sourceDirectory2);
         $targetFile2 = str_replace($sourceDirectory2, $targetDirectory2, $sourceFile2);
+        $targetDirectory3 = str_replace($sourceDirectory2, $targetDirectory2, $sourceDirectory3);
 
         $this->fsService->makeDirectory($sourceDirectory1);
         $this->fsService->writeFile($sourceFile1, $this->fakerService->getLorem()->randomText());
         $this->fsService->makeDirectory($sourceDirectory2);
         $this->fsService->writeFile($sourceFile2, $this->fakerService->getLorem()->randomText());
+        $this->fsService->makeDirectory($sourceDirectory3);
 
         $this->fsService->copy($sourceDirectory1, $targetDirectory1);
 
@@ -442,14 +451,17 @@ class FsServiceTest extends FsTestCase
         $this->assertTrue($this->fsService->isFile($sourceFile1));
         $this->assertTrue($this->fsService->isDirectory($sourceDirectory2));
         $this->assertTrue($this->fsService->isFile($sourceFile2));
+        $this->assertTrue($this->fsService->isDirectory($sourceDirectory3));
         $this->assertTrue($this->fsService->isDirectory($targetDirectory1));
         $this->assertTrue($this->fsService->isFile($targetFile1));
         $this->assertTrue($this->fsService->isDirectory($targetDirectory2));
         $this->assertTrue($this->fsService->isFile($targetFile2));
+        $this->assertTrue($this->fsService->isDirectory($targetDirectory3));
         $this->assertEquals($this->fsService->getMode($sourceDirectory1), $this->fsService->getMode($targetDirectory1));
         $this->assertEquals($this->fsService->getMode($sourceFile1), $this->fsService->getMode($targetFile1));
         $this->assertEquals($this->fsService->getMode($sourceDirectory2), $this->fsService->getMode($targetDirectory2));
         $this->assertEquals($this->fsService->getMode($sourceFile2), $this->fsService->getMode($targetFile2));
+        $this->assertEquals($this->fsService->getMode($sourceDirectory3), $this->fsService->getMode($targetDirectory3));
     }
 
     public function testCopyFile(): void
@@ -853,6 +865,7 @@ class FsServiceTest extends FsTestCase
         $file1 = sprintf('%s/%s', $directory1, $this->fakerService->getFs()->randomFile());
         $directory2 = sprintf('%s/%s', $directory1, $this->fakerService->getFs()->randomDirectory());
         $file2 = sprintf('%s/%s', $directory2, $this->fakerService->getFs()->randomFile());
+        $directory3 = sprintf('%s/%s', $directory2, $this->fakerService->getFs()->randomDirectory());
 
         $expectedSize = 32;
 
@@ -860,6 +873,7 @@ class FsServiceTest extends FsTestCase
         $this->fsService->writeFile($file1, $this->fakerService->getCore()->randomString($expectedSize / 2));
         $this->fsService->makeDirectory($directory2);
         $this->fsService->writeFile($file2, $this->fakerService->getCore()->randomString($expectedSize / 2));
+        $this->fsService->makeDirectory($directory3);
 
         $size = $this->fsService->getSize($directory1);
 
