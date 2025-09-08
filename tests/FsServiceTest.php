@@ -27,11 +27,13 @@ class FsServiceTest extends FsTestCase
         $file1 = sprintf('%s/%s', $directory1, $this->fakerService->getFs()->randomFile());
         $directory2 = sprintf('%s/%s', $directory1, $this->fakerService->getFs()->randomDirectory());
         $file2 = sprintf('%s/%s', $directory2, $this->fakerService->getFs()->randomFile());
+        $directory3 = sprintf('%s/%s', $directory2, $this->fakerService->getFs()->randomDirectory());
 
         $this->fsService->makeDirectory($directory1);
         $this->fsService->writeFile($file1, $this->fakerService->getLorem()->randomText());
         $this->fsService->makeDirectory($directory2);
         $this->fsService->writeFile($file2, $this->fakerService->getLorem()->randomText());
+        $this->fsService->makeDirectory($directory3);
 
         if (!$recursive) {
             $expectedPaths = [
@@ -43,6 +45,7 @@ class FsServiceTest extends FsTestCase
                 $file1,
                 $directory2,
                 $file2,
+                $directory3,
             ];
         }
 
