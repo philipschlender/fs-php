@@ -367,11 +367,13 @@ class FsServiceTest extends FsTestCase
         $file1 = sprintf('%s/%s', $directory1, $this->fakerService->getFs()->randomFile());
         $directory2 = sprintf('%s/%s', $directory1, $this->fakerService->getFs()->randomDirectory());
         $file2 = sprintf('%s/%s', $directory2, $this->fakerService->getFs()->randomFile());
+        $directory3 = sprintf('%s/%s', $directory2, $this->fakerService->getFs()->randomDirectory());
 
         $this->fsService->makeDirectory($directory1);
         $this->fsService->writeFile($file1, $this->fakerService->getLorem()->randomText());
         $this->fsService->makeDirectory($directory2);
         $this->fsService->writeFile($file2, $this->fakerService->getLorem()->randomText());
+        $this->fsService->makeDirectory($directory3);
 
         $this->fsService->remove($directory1);
 
@@ -379,6 +381,7 @@ class FsServiceTest extends FsTestCase
         $this->assertFalse($this->fsService->isFile($file1));
         $this->assertFalse($this->fsService->isDirectory($directory2));
         $this->assertFalse($this->fsService->isFile($file2));
+        $this->assertFalse($this->fsService->isDirectory($directory3));
     }
 
     public function testRemoveFile(): void
