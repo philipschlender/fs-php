@@ -362,7 +362,9 @@ class FsService implements FsServiceInterface
             $sourceSubPath = sprintf('%s/%s', $sourcePath, $subPath);
             $targetSubPath = sprintf('%s/%s', $targetPath, $subPath);
 
-            if ($this->isFile($sourceSubPath)) {
+            if ($this->isDirectory($sourceSubPath) && !$this->isDirectory($targetSubPath)) {
+                $this->makeDirectory($targetSubPath, $this->getMode($sourceSubPath));
+            } elseif ($this->isFile($sourceSubPath)) {
                 $this->copyFile($sourceSubPath, $targetSubPath);
             }
         }
