@@ -45,7 +45,7 @@
             "./vendor/bin/php-cs-fixer fix"
         ],
         "phpstan": [
-            "./vendor/bin/phpstan"
+            "./vendor/bin/phpstan --memory-limit=256M"
         ],
         "phpunit": [
             "./vendor/bin/phpunit"
