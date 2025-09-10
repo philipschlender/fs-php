@@ -272,11 +272,11 @@ class StreamTest extends FsTestCase
     {
         $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
 
-        $data = $this->fakerService->getCore()->randomString();
+        $data = $this->fakerService->getCore()->randomString(32);
 
         $stream = new Stream($file, Mode::Write);
 
-        $stream->write($data);
+        $numberOfBytes = $stream->write($data);
 
         $stream->rewind();
 
@@ -284,6 +284,7 @@ class StreamTest extends FsTestCase
 
         $stream->close();
 
+        $this->assertEquals(32, $numberOfBytes);
         $this->assertEquals($data, $dataRead);
     }
 
