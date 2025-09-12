@@ -17,7 +17,7 @@ class FsService implements FsServiceInterface
     public function list(string $path, bool $recursive = false): \Generator
     {
         if (!$this->isDirectory($path)) {
-            throw new FsException(sprintf('The path %s must be a directory.', $path));
+            throw new FsException('The path must be a directory.');
         }
 
         if (!$recursive) {
@@ -63,7 +63,7 @@ class FsService implements FsServiceInterface
     public function makeDirectory(string $path, int $mode = 0775): void
     {
         if ($this->exists($path)) {
-            throw new FsException(sprintf('The path %s already exists.', $path));
+            throw new FsException('The path already exists.');
         }
 
         $umask = umask(0);
@@ -73,7 +73,7 @@ class FsService implements FsServiceInterface
         umask($umask);
 
         if (!$success) {
-            throw new FsException(sprintf('Failed to create the directory %s.', $path));
+            throw new FsException('Failed to create the directory.');
         }
     }
 
@@ -83,7 +83,7 @@ class FsService implements FsServiceInterface
     public function readFile(string $path): string
     {
         if (!$this->isFile($path)) {
-            throw new FsException(sprintf('The path %s must be a file.', $path));
+            throw new FsException('The path must be a file.');
         }
 
         $stream = $this->openStream($path, Mode::Read);
@@ -101,13 +101,13 @@ class FsService implements FsServiceInterface
     public function writeFile(string $path, string $data, int $mode = 0664): void
     {
         if ($this->exists($path)) {
-            throw new FsException(sprintf('The path %s already exists.', $path));
+            throw new FsException('The path already exists.');
         }
 
         $pathDirectory = pathinfo($path, PATHINFO_DIRNAME);
 
         if (!$this->isDirectory($pathDirectory)) {
-            throw new FsException(sprintf('The path %s must exist.', $pathDirectory));
+            throw new FsException('The path must exist.');
         }
 
         $stream = $this->openStream($path, Mode::Write);
@@ -125,25 +125,25 @@ class FsService implements FsServiceInterface
     public function touch(string $path, ?int $modificationTime = null, ?int $accessTime = null): void
     {
         if (is_int($modificationTime) && $modificationTime < 0) {
-            throw new FsException(sprintf('The modification time %d must be greater than or equal to 0.', $modificationTime));
+            throw new FsException('The modification time must be greater than or equal to 0.');
         }
 
         if (is_int($modificationTime) && $accessTime < 0) {
-            throw new FsException(sprintf('The access time %d must be greater than or equal to 0.', $accessTime));
+            throw new FsException('The access time must be greater than or equal to 0.');
         }
 
         if (is_null($modificationTime) && is_int($accessTime)) {
-            throw new FsException(sprintf('The modification time null must be greater than or equal to 0, when the access time %d is greater than or equal to 0.', $accessTime));
+            throw new FsException('The modification time must be greater than or equal to 0, when the access time is greater than or equal to 0.');
         }
 
         $pathDirectory = pathinfo($path, PATHINFO_DIRNAME);
 
         if (!$this->isDirectory($pathDirectory)) {
-            throw new FsException(sprintf('The path %s must exist.', $pathDirectory));
+            throw new FsException('The path must exist.');
         }
 
         if (!touch($path, $modificationTime, $accessTime)) {
-            throw new FsException(sprintf('Failed to touch the file %s.', $path));
+            throw new FsException('Failed to touch the file.');
         }
     }
 
@@ -153,7 +153,7 @@ class FsService implements FsServiceInterface
     public function remove(string $path): void
     {
         if (!$this->exists($path)) {
-            throw new FsException(sprintf('The path %s must exist.', $path));
+            throw new FsException('The path must exist.');
         }
 
         if ($this->isDirectory($path)) {
@@ -171,17 +171,17 @@ class FsService implements FsServiceInterface
     public function copy(string $sourcePath, string $targetPath): void
     {
         if (!$this->exists($sourcePath)) {
-            throw new FsException(sprintf('The source path %s must exist.', $sourcePath));
+            throw new FsException('The source path must exist.');
         }
 
         if ($this->exists($targetPath)) {
-            throw new FsException(sprintf('The target path %s already exists.', $targetPath));
+            throw new FsException('The target path already exists.');
         }
 
         $targetPathDirectory = pathinfo($targetPath, PATHINFO_DIRNAME);
 
         if (!$this->isDirectory($targetPathDirectory)) {
-            throw new FsException(sprintf('The target path %s must exist.', $targetPathDirectory));
+            throw new FsException('The target path must exist.');
         }
 
         if ($this->isDirectory($sourcePath)) {
@@ -199,23 +199,23 @@ class FsService implements FsServiceInterface
     public function move(string $sourcePath, string $targetPath): void
     {
         if (!$this->exists($sourcePath)) {
-            throw new FsException(sprintf('The source path %s must exist.', $sourcePath));
+            throw new FsException('The source path must exist.');
         }
 
         if ($this->exists($targetPath)) {
-            throw new FsException(sprintf('The target path %s already exists.', $targetPath));
+            throw new FsException('The target path already exists.');
         }
 
         $targetPathDirectory = pathinfo($targetPath, PATHINFO_DIRNAME);
 
         if (!$this->isDirectory($targetPathDirectory)) {
-            throw new FsException(sprintf('The target path %s must exist.', $targetPathDirectory));
+            throw new FsException('The target path must exist.');
         }
 
         $type = $this->isDirectory($sourcePath) ? 'directory' : 'file';
 
         if (!rename($sourcePath, $targetPath)) {
-            throw new FsException(sprintf('Failed to move the %s %s to %s.', $type, $sourcePath, $targetPath));
+            throw new FsException(sprintf('Failed to move the %s.', $type));
         }
     }
 
@@ -225,13 +225,13 @@ class FsService implements FsServiceInterface
     public function getMimeContentType(string $path): string
     {
         if (!$this->isFile($path)) {
-            throw new FsException(sprintf('The path %s must be a file.', $path));
+            throw new FsException('The path must be a file.');
         }
 
         $fileMimeContentType = @mime_content_type($path);
 
         if (!is_string($fileMimeContentType)) {
-            throw new FsException(sprintf('Failed to get the mime content type of the file %s.', $path));
+            throw new FsException('Failed to get the mime content type of the file.');
         }
 
         return $fileMimeContentType;
@@ -243,7 +243,7 @@ class FsService implements FsServiceInterface
     public function getMode(string $path): int
     {
         if (!$this->exists($path)) {
-            throw new FsException(sprintf('The path %s must exist.', $path));
+            throw new FsException('The path must exist.');
         }
 
         $type = $this->isDirectory($path) ? 'directory' : 'file';
@@ -251,7 +251,7 @@ class FsService implements FsServiceInterface
         $mode = @fileperms($path);
 
         if (!is_int($mode)) {
-            throw new FsException(sprintf('Failed to get the mode of the %s %s.', $type, $path));
+            throw new FsException(sprintf('Failed to get the mode of the %s.', $type));
         }
 
         return $mode & 0777;
@@ -263,7 +263,7 @@ class FsService implements FsServiceInterface
     public function changeMode(string $path, int $mode): void
     {
         if (!$this->exists($path)) {
-            throw new FsException(sprintf('The path %s must exist.', $path));
+            throw new FsException('The path must exist.');
         }
 
         $type = $this->isDirectory($path) ? 'directory' : 'file';
@@ -271,7 +271,7 @@ class FsService implements FsServiceInterface
         $umask = umask(0);
 
         if (!@chmod($path, $mode)) {
-            throw new FsException(sprintf('Failed to change the mode of the %s %s.', $type, $path));
+            throw new FsException(sprintf('Failed to change the mode of the %s.', $type));
         }
 
         umask($umask);
@@ -283,7 +283,7 @@ class FsService implements FsServiceInterface
     public function getSize(string $path): int
     {
         if (!$this->exists($path)) {
-            throw new FsException(sprintf('The path %s must exist.', $path));
+            throw new FsException('The path must exist.');
         }
 
         if ($this->isDirectory($path)) {
@@ -307,7 +307,7 @@ class FsService implements FsServiceInterface
     protected function removeDirectory(string $path): void
     {
         if (!$this->isDirectory($path)) {
-            throw new FsException(sprintf('The path %s must be a directory.', $path));
+            throw new FsException('The path must be a directory.');
         }
 
         $subPaths = $this->list($path, true);
@@ -317,7 +317,7 @@ class FsService implements FsServiceInterface
 
             if ($this->isDirectory($subPath)) {
                 if (!@rmdir($subPath)) {
-                    throw new FsException(sprintf('Failed to delete the directory %s.', $subPath));
+                    throw new FsException('Failed to delete the directory.');
                 }
             } elseif ($this->isFile($subPath)) {
                 $this->removeFile($subPath);
@@ -325,7 +325,7 @@ class FsService implements FsServiceInterface
         }
 
         if (!@rmdir($path)) {
-            throw new FsException(sprintf('Failed to delete the directory %s.', $path));
+            throw new FsException('Failed to delete the directory.');
         }
     }
 
@@ -335,11 +335,11 @@ class FsService implements FsServiceInterface
     protected function removeFile(string $path): void
     {
         if (!$this->isFile($path)) {
-            throw new FsException(sprintf('The path %s must be a file.', $path));
+            throw new FsException('The path must be a file.');
         }
 
         if (!@unlink($path)) {
-            throw new FsException(sprintf('Failed to remove the file %s.', $path));
+            throw new FsException('Failed to remove the file.');
         }
     }
 
@@ -349,11 +349,11 @@ class FsService implements FsServiceInterface
     protected function copyDirectory(string $sourcePath, string $targetPath): void
     {
         if (!$this->isDirectory($sourcePath)) {
-            throw new FsException(sprintf('The source path %s must be a directory.', $sourcePath));
+            throw new FsException('The source path must be a directory.');
         }
 
         if ($this->exists($targetPath)) {
-            throw new FsException(sprintf('The target path %s already exists.', $targetPath));
+            throw new FsException('The target path already exists.');
         }
 
         $subPaths = $this->list($sourcePath, true);
@@ -376,11 +376,11 @@ class FsService implements FsServiceInterface
     protected function copyFile(string $sourcePath, string $targetPath): void
     {
         if (!$this->isFile($sourcePath)) {
-            throw new FsException(sprintf('The source path %s must be a file.', $sourcePath));
+            throw new FsException('The source path must be a file.');
         }
 
         if ($this->exists($targetPath)) {
-            throw new FsException(sprintf('The target path %s already exists.', $targetPath));
+            throw new FsException('The target path already exists.');
         }
 
         $sourcePathDirectory = pathinfo($sourcePath, PATHINFO_DIRNAME);
@@ -391,7 +391,7 @@ class FsService implements FsServiceInterface
         }
 
         if (!copy($sourcePath, $targetPath)) {
-            throw new FsException(sprintf('Failed to copy the file %s to %s.', $sourcePath, $targetPath));
+            throw new FsException('Failed to copy the file.');
         }
 
         $this->changeMode($targetPath, $this->getMode($sourcePath));
@@ -403,7 +403,7 @@ class FsService implements FsServiceInterface
     protected function getSizeOfDirectory(string $path): int
     {
         if (!$this->isDirectory($path)) {
-            throw new FsException(sprintf('The path %s must be a directory.', $path));
+            throw new FsException('The path must be a directory.');
         }
 
         $size = 0;
@@ -427,13 +427,13 @@ class FsService implements FsServiceInterface
     protected function getSizeOfFile(string $path): int
     {
         if (!$this->isFile($path)) {
-            throw new FsException(sprintf('The path %s must be a file.', $path));
+            throw new FsException('The path must be a file.');
         }
 
         $fileSize = @filesize($path);
 
         if (!is_int($fileSize)) {
-            throw new FsException(sprintf('Failed to get the size of the file %s.', $path));
+            throw new FsException('Failed to get the size of the file.');
         }
 
         return $fileSize;

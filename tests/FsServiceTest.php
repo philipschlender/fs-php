@@ -81,7 +81,7 @@ class FsServiceTest extends FsTestCase
         $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
 
         $this->expectException(FsException::class);
-        $this->expectExceptionMessage(sprintf('The path %s must be a directory.', $directory));
+        $this->expectExceptionMessage('The path must be a directory.');
 
         iterator_to_array($this->fsService->list($directory));
     }
@@ -147,7 +147,7 @@ class FsServiceTest extends FsTestCase
         $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
 
         $this->expectException(FsException::class);
-        $this->expectExceptionMessage(sprintf('The path %s already exists.', $directory));
+        $this->expectExceptionMessage('The path already exists.');
 
         $this->fsService->makeDirectory($directory);
 
@@ -172,7 +172,7 @@ class FsServiceTest extends FsTestCase
         $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
 
         $this->expectException(FsException::class);
-        $this->expectExceptionMessage(sprintf('The path %s must be a file.', $file));
+        $this->expectExceptionMessage('The path must be a file.');
 
         $this->fsService->readFile($file);
     }
@@ -197,7 +197,7 @@ class FsServiceTest extends FsTestCase
         $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
 
         $this->expectException(FsException::class);
-        $this->expectExceptionMessage(sprintf('The path %s already exists.', $file));
+        $this->expectExceptionMessage('The path already exists.');
 
         $this->fsService->writeFile($file, $this->fakerService->getLorem()->randomText());
 
@@ -210,7 +210,7 @@ class FsServiceTest extends FsTestCase
         $file = sprintf('%s/%s', $directory, $this->fakerService->getFs()->randomFile());
 
         $this->expectException(FsException::class);
-        $this->expectExceptionMessage(sprintf('The path %s must exist.', $directory));
+        $this->expectExceptionMessage('The path must exist.');
 
         $this->fsService->writeFile($file, $this->fakerService->getLorem()->randomText());
     }
@@ -302,7 +302,7 @@ class FsServiceTest extends FsTestCase
     public function testTouchInvalidModificationTime(): void
     {
         $this->expectException(FsException::class);
-        $this->expectExceptionMessage('The modification time -1 must be greater than or equal to 0.');
+        $this->expectExceptionMessage('The modification time must be greater than or equal to 0.');
 
         $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
 
@@ -312,7 +312,7 @@ class FsServiceTest extends FsTestCase
     public function testTouchInvalidAccessTime(): void
     {
         $this->expectException(FsException::class);
-        $this->expectExceptionMessage('The access time -1 must be greater than or equal to 0.');
+        $this->expectExceptionMessage('The access time must be greater than or equal to 0.');
 
         $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
 
@@ -322,7 +322,7 @@ class FsServiceTest extends FsTestCase
     public function testTouchInvalidModificationTimeAndAccessTime(): void
     {
         $this->expectException(FsException::class);
-        $this->expectExceptionMessage('The modification time null must be greater than or equal to 0, when the access time 0 is greater than or equal to 0.');
+        $this->expectExceptionMessage('The modification time must be greater than or equal to 0, when the access time is greater than or equal to 0.');
 
         $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
 
@@ -341,7 +341,7 @@ class FsServiceTest extends FsTestCase
         }
 
         $this->expectException(FsException::class);
-        $this->expectExceptionMessage(sprintf('The path %s must exist.', $directory));
+        $this->expectExceptionMessage('The path must exist.');
 
         $this->fsService->touch($path);
     }
@@ -405,7 +405,7 @@ class FsServiceTest extends FsTestCase
         }
 
         $this->expectException(FsException::class);
-        $this->expectExceptionMessage(sprintf('The path %s must exist.', $path));
+        $this->expectExceptionMessage('The path must exist.');
 
         $this->fsService->remove($path);
     }
@@ -490,7 +490,7 @@ class FsServiceTest extends FsTestCase
         }
 
         $this->expectException(FsException::class);
-        $this->expectExceptionMessage(sprintf('The source path %s must exist.', $sourcePath));
+        $this->expectExceptionMessage('The source path must exist.');
 
         $this->fsService->copy($sourcePath, $targetPath);
     }
@@ -528,7 +528,7 @@ class FsServiceTest extends FsTestCase
         }
 
         $this->expectException(FsException::class);
-        $this->expectExceptionMessage(sprintf('The target path %s already exists.', $targetPath));
+        $this->expectExceptionMessage('The target path already exists.');
 
         $this->fsService->copy($sourcePath, $targetPath);
     }
@@ -566,7 +566,7 @@ class FsServiceTest extends FsTestCase
         }
 
         $this->expectException(FsException::class);
-        $this->expectExceptionMessage(sprintf('The target path %s must exist.', $directory));
+        $this->expectExceptionMessage('The target path must exist.');
 
         $this->fsService->copy($sourcePath, $targetPath);
     }
@@ -630,7 +630,7 @@ class FsServiceTest extends FsTestCase
         }
 
         $this->expectException(FsException::class);
-        $this->expectExceptionMessage(sprintf('The source path %s must exist.', $sourcePath));
+        $this->expectExceptionMessage('The source path must exist.');
 
         $this->fsService->move($sourcePath, $targetPath);
     }
@@ -668,7 +668,7 @@ class FsServiceTest extends FsTestCase
         }
 
         $this->expectException(FsException::class);
-        $this->expectExceptionMessage(sprintf('The target path %s already exists.', $targetPath));
+        $this->expectExceptionMessage('The target path already exists.');
 
         $this->fsService->move($sourcePath, $targetPath);
     }
@@ -706,7 +706,7 @@ class FsServiceTest extends FsTestCase
         }
 
         $this->expectException(FsException::class);
-        $this->expectExceptionMessage(sprintf('The target path %s must exist.', $directory));
+        $this->expectExceptionMessage('The target path must exist.');
 
         $this->fsService->move($sourcePath, $targetPath);
     }
@@ -742,7 +742,7 @@ class FsServiceTest extends FsTestCase
         $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
 
         $this->expectException(FsException::class);
-        $this->expectExceptionMessage(sprintf('The path %s must be a file.', $file));
+        $this->expectExceptionMessage('The path must be a file.');
 
         $this->fsService->getMimeContentType($file);
     }
@@ -783,7 +783,7 @@ class FsServiceTest extends FsTestCase
         }
 
         $this->expectException(FsException::class);
-        $this->expectExceptionMessage(sprintf('The path %s must exist.', $path));
+        $this->expectExceptionMessage('The path must exist.');
 
         $this->fsService->getMode($path);
     }
@@ -839,7 +839,7 @@ class FsServiceTest extends FsTestCase
         }
 
         $this->expectException(FsException::class);
-        $this->expectExceptionMessage(sprintf('The path %s must exist.', $path));
+        $this->expectExceptionMessage('The path must exist.');
 
         $this->fsService->changeMode($path, 0777);
     }
@@ -903,7 +903,7 @@ class FsServiceTest extends FsTestCase
         }
 
         $this->expectException(FsException::class);
-        $this->expectExceptionMessage(sprintf('The path %s must exist.', $path));
+        $this->expectExceptionMessage('The path must exist.');
 
         $this->fsService->getSize($path);
     }

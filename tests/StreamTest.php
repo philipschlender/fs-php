@@ -52,7 +52,7 @@ class StreamTest extends FsTestCase
         $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
 
         $this->expectException(FsException::class);
-        $this->expectExceptionMessage(sprintf('Failed to open the file %s.', $file));
+        $this->expectExceptionMessage('Failed to open the file.');
 
         new Stream($file, Mode::Read);
     }
@@ -205,7 +205,7 @@ class StreamTest extends FsTestCase
     public function testReadInvalidLength(): void
     {
         $this->expectException(FsException::class);
-        $this->expectExceptionMessage('The length 0 must be greater than or equal to 1.');
+        $this->expectExceptionMessage('The length must be greater than or equal to 1.');
 
         $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
 
