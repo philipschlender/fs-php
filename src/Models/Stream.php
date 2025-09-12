@@ -57,7 +57,7 @@ class Stream implements StreamInterface
         }
 
         if (is_int($length) && $length < 1) {
-            throw new FsException(sprintf('The length %d must be greater than or equal to 1.', $length));
+            throw new FsException('The length must be greater than or equal to 1.');
         }
 
         $data = '';
@@ -277,7 +277,7 @@ class Stream implements StreamInterface
         $stream = @fopen($path, $modeString);
 
         if (!is_resource($stream) || 'stream' !== get_resource_type($stream)) {
-            throw new FsException(sprintf('Failed to open the file %s.', $path));
+            throw new FsException('Failed to open the file.');
         }
 
         return $stream;
