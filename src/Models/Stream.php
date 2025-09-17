@@ -18,7 +18,7 @@ class Stream implements StreamInterface
     /**
      * @throws FsException
      */
-    public function __construct(protected string $path, protected Mode $mode)
+    public function __construct(string $path, protected Mode $mode)
     {
         $this->stream = $this->open($path, $mode);
         $this->isOpen = true;
