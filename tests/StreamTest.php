@@ -14,7 +14,7 @@ class StreamTest extends FsTestCase
     #[DataProvider('dataProviderConstruct')]
     public function testConstruct(Mode $mode): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         if (Mode::Read === $mode) {
             $stream = new Stream($file, Mode::Write);
@@ -49,7 +49,7 @@ class StreamTest extends FsTestCase
 
     public function testConstructFailedToOpen(): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $this->expectException(FsException::class);
         $this->expectExceptionMessage('Failed to open the file.');
@@ -60,7 +60,7 @@ class StreamTest extends FsTestCase
     #[DataProvider('dataProviderIsOpen')]
     public function testIsOpen(Mode $mode): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         if (Mode::Read === $mode) {
             $stream = new Stream($file, Mode::Write);
@@ -98,7 +98,7 @@ class StreamTest extends FsTestCase
     #[DataProvider('dataProviderIsReadable')]
     public function testIsReadable(Mode $mode, bool $expectedIsReadable): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         if (Mode::Read === $mode) {
             $stream = new Stream($file, Mode::Write);
@@ -138,7 +138,7 @@ class StreamTest extends FsTestCase
 
     public function testIsReadableStreamClosed(): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $stream = new Stream($file, Mode::Write);
 
@@ -152,7 +152,7 @@ class StreamTest extends FsTestCase
     #[DataProvider('dataProviderRead')]
     public function testRead(string $data, ?int $length, string $expectedData): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $stream = new Stream($file, Mode::Write);
 
@@ -193,7 +193,7 @@ class StreamTest extends FsTestCase
         $this->expectException(FsException::class);
         $this->expectExceptionMessage('The stream must be readable.');
 
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $stream = new Stream($file, Mode::Write);
 
@@ -207,7 +207,7 @@ class StreamTest extends FsTestCase
         $this->expectException(FsException::class);
         $this->expectExceptionMessage('The length must be greater than or equal to 1.');
 
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $stream = new Stream($file, Mode::Write);
 
@@ -217,7 +217,7 @@ class StreamTest extends FsTestCase
     #[DataProvider('dataProviderIsWritable')]
     public function testIsWritable(Mode $mode, bool $expectedIsWritable): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         if (Mode::Read === $mode) {
             $stream = new Stream($file, Mode::Write);
@@ -257,7 +257,7 @@ class StreamTest extends FsTestCase
 
     public function testIsWritableStreamClosed(): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $stream = new Stream($file, Mode::Write);
 
@@ -270,9 +270,9 @@ class StreamTest extends FsTestCase
 
     public function testWrite(): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
-        $data = $this->fakerService->getCore()->randomString(32);
+        $data = $this->fakerService->getDataTypeGenerator()->randomString(32);
 
         $stream = new Stream($file, Mode::Write);
 
@@ -293,18 +293,18 @@ class StreamTest extends FsTestCase
         $this->expectException(FsException::class);
         $this->expectExceptionMessage('The stream must be writable.');
 
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $stream = new Stream($file, Mode::Write);
 
         $stream->close();
 
-        $stream->write($this->fakerService->getCore()->randomString());
+        $stream->write($this->fakerService->getDataTypeGenerator()->randomString());
     }
 
     public function testIsSeekable(): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $stream = new Stream($file, Mode::Write);
 
@@ -317,7 +317,7 @@ class StreamTest extends FsTestCase
 
     public function testIsSeekableStreamClosed(): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $stream = new Stream($file, Mode::Write);
 
@@ -331,7 +331,7 @@ class StreamTest extends FsTestCase
     #[DataProvider('dataProviderSeek')]
     public function testSeek(string $data, int $offset, Whence $whence, string $expectedData): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $stream = new Stream($file, Mode::Write);
 
@@ -380,18 +380,18 @@ class StreamTest extends FsTestCase
         $this->expectException(FsException::class);
         $this->expectExceptionMessage('The stream must be seekable.');
 
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $stream = new Stream($file, Mode::Write);
 
         $stream->close();
 
-        $stream->seek($this->fakerService->getCore()->randomInteger(), Whence::Start);
+        $stream->seek($this->fakerService->getDataTypeGenerator()->randomInteger(), Whence::Start);
     }
 
     public function testTell(): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $stream = new Stream($file, Mode::Write);
 
@@ -407,7 +407,7 @@ class StreamTest extends FsTestCase
         $this->expectException(FsException::class);
         $this->expectExceptionMessage('The stream must be open.');
 
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $stream = new Stream($file, Mode::Write);
 
@@ -418,7 +418,7 @@ class StreamTest extends FsTestCase
 
     public function testEof(): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $stream = new Stream($file, Mode::Write);
 
@@ -436,7 +436,7 @@ class StreamTest extends FsTestCase
         $this->expectException(FsException::class);
         $this->expectExceptionMessage('The stream must be open.');
 
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $stream = new Stream($file, Mode::Write);
 
@@ -447,11 +447,11 @@ class StreamTest extends FsTestCase
 
     public function testRewind(): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $stream = new Stream($file, Mode::Write);
 
-        $stream->write($this->fakerService->getCore()->randomString());
+        $stream->write($this->fakerService->getDataTypeGenerator()->randomString());
 
         $stream->rewind();
 
@@ -467,7 +467,7 @@ class StreamTest extends FsTestCase
         $this->expectException(FsException::class);
         $this->expectExceptionMessage('The stream must be open.');
 
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $stream = new Stream($file, Mode::Write);
 
@@ -478,7 +478,7 @@ class StreamTest extends FsTestCase
 
     public function testGetSize(): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $stream = new Stream($file, Mode::Write);
 
@@ -494,7 +494,7 @@ class StreamTest extends FsTestCase
         $this->expectException(FsException::class);
         $this->expectExceptionMessage('The stream must be open.');
 
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $stream = new Stream($file, Mode::Write);
 
@@ -507,7 +507,7 @@ class StreamTest extends FsTestCase
     #[DoesNotPerformAssertions]
     public function testLock(Mode $mode, bool $block): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         if (Mode::Read === $mode) {
             $stream = new Stream($file, Mode::Write);
@@ -562,7 +562,7 @@ class StreamTest extends FsTestCase
         $this->expectException(FsException::class);
         $this->expectExceptionMessage('The stream must be open.');
 
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $stream = new Stream($file, Mode::Write);
 
@@ -576,7 +576,7 @@ class StreamTest extends FsTestCase
         $this->expectException(FsException::class);
         $this->expectExceptionMessage('Failed to lock the stream.');
 
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $stream1 = new Stream($file, Mode::Write);
         $stream2 = new Stream($file, Mode::Write);
@@ -588,7 +588,7 @@ class StreamTest extends FsTestCase
     #[DoesNotPerformAssertions]
     public function testUnlock(): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $stream = new Stream($file, Mode::Write);
 
@@ -604,7 +604,7 @@ class StreamTest extends FsTestCase
         $this->expectException(FsException::class);
         $this->expectExceptionMessage('The stream must be open.');
 
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $stream = new Stream($file, Mode::Write);
 
@@ -615,7 +615,7 @@ class StreamTest extends FsTestCase
 
     public function testClose(): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $stream = new Stream($file, Mode::Write);
 
@@ -626,7 +626,7 @@ class StreamTest extends FsTestCase
 
     public function testCloseStreamClosed(): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $stream = new Stream($file, Mode::Write);
 

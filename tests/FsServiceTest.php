@@ -23,16 +23,16 @@ class FsServiceTest extends FsTestCase
     #[DataProvider('dataProviderList')]
     public function testList(bool $recursive): void
     {
-        $directory1 = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
-        $file1 = sprintf('%s/%s', $directory1, $this->fakerService->getFs()->randomFile());
-        $directory2 = sprintf('%s/%s', $directory1, $this->fakerService->getFs()->randomDirectory());
-        $file2 = sprintf('%s/%s', $directory2, $this->fakerService->getFs()->randomFile());
-        $directory3 = sprintf('%s/%s', $directory2, $this->fakerService->getFs()->randomDirectory());
+        $directory1 = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
+        $file1 = sprintf('%s/%s', $directory1, $this->fakerService->getFsGenerator()->randomFile());
+        $directory2 = sprintf('%s/%s', $directory1, $this->fakerService->getFsGenerator()->randomDirectory());
+        $file2 = sprintf('%s/%s', $directory2, $this->fakerService->getFsGenerator()->randomFile());
+        $directory3 = sprintf('%s/%s', $directory2, $this->fakerService->getFsGenerator()->randomDirectory());
 
         $this->fsService->makeDirectory($directory1);
-        $this->fsService->writeFile($file1, $this->fakerService->getLorem()->randomText());
+        $this->fsService->writeFile($file1, $this->fakerService->getLoremGenerator()->randomText());
         $this->fsService->makeDirectory($directory2);
-        $this->fsService->writeFile($file2, $this->fakerService->getLorem()->randomText());
+        $this->fsService->writeFile($file2, $this->fakerService->getLoremGenerator()->randomText());
         $this->fsService->makeDirectory($directory3);
 
         if (!$recursive) {
@@ -78,7 +78,7 @@ class FsServiceTest extends FsTestCase
 
     public function testListPathMustBeDirectory(): void
     {
-        $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
+        $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
 
         $this->expectException(FsException::class);
         $this->expectExceptionMessage('The path must be a directory.');
@@ -88,7 +88,7 @@ class FsServiceTest extends FsTestCase
 
     public function testIsDirectory(): void
     {
-        $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
+        $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
 
         $this->fsService->makeDirectory($directory);
 
@@ -99,9 +99,9 @@ class FsServiceTest extends FsTestCase
 
     public function testIsFile(): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
-        $this->fsService->writeFile($file, $this->fakerService->getLorem()->randomText());
+        $this->fsService->writeFile($file, $this->fakerService->getLoremGenerator()->randomText());
 
         $isFile = $this->fsService->isFile($file);
 
@@ -110,7 +110,7 @@ class FsServiceTest extends FsTestCase
 
     public function testExistsDirectory(): void
     {
-        $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
+        $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
 
         $this->fsService->makeDirectory($directory);
 
@@ -121,9 +121,9 @@ class FsServiceTest extends FsTestCase
 
     public function testExistsFile(): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
-        $this->fsService->writeFile($file, $this->fakerService->getLorem()->randomText());
+        $this->fsService->writeFile($file, $this->fakerService->getLoremGenerator()->randomText());
 
         $exists = $this->fsService->exists($file);
 
@@ -132,7 +132,7 @@ class FsServiceTest extends FsTestCase
 
     public function testMakeDirectory(): void
     {
-        $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory(2));
+        $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory(2));
 
         $expectedMode = 0770;
 
@@ -144,7 +144,7 @@ class FsServiceTest extends FsTestCase
 
     public function testMakeDirectoryPathAlreadyExists(): void
     {
-        $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
+        $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
 
         $this->expectException(FsException::class);
         $this->expectExceptionMessage('The path already exists.');
@@ -156,9 +156,9 @@ class FsServiceTest extends FsTestCase
 
     public function testReadFile(): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
-        $expectedData = $this->fakerService->getLorem()->randomText();
+        $expectedData = $this->fakerService->getLoremGenerator()->randomText();
 
         $this->fsService->writeFile($file, $expectedData);
 
@@ -169,7 +169,7 @@ class FsServiceTest extends FsTestCase
 
     public function testReadFilePathMustBeFile(): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $this->expectException(FsException::class);
         $this->expectExceptionMessage('The path must be a file.');
@@ -179,9 +179,9 @@ class FsServiceTest extends FsTestCase
 
     public function testWriteFile(): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
-        $expectedData = $this->fakerService->getLorem()->randomText();
+        $expectedData = $this->fakerService->getLoremGenerator()->randomText();
 
         $expectedMode = 0660;
 
@@ -194,31 +194,31 @@ class FsServiceTest extends FsTestCase
 
     public function testWriteFilePathAlreadyExists(): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $this->expectException(FsException::class);
         $this->expectExceptionMessage('The path already exists.');
 
-        $this->fsService->writeFile($file, $this->fakerService->getLorem()->randomText());
+        $this->fsService->writeFile($file, $this->fakerService->getLoremGenerator()->randomText());
 
-        $this->fsService->writeFile($file, $this->fakerService->getLorem()->randomText());
+        $this->fsService->writeFile($file, $this->fakerService->getLoremGenerator()->randomText());
     }
 
     public function testWriteFilePathMustExist(): void
     {
-        $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
-        $file = sprintf('%s/%s', $directory, $this->fakerService->getFs()->randomFile());
+        $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
+        $file = sprintf('%s/%s', $directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $this->expectException(FsException::class);
         $this->expectExceptionMessage('The path must exist.');
 
-        $this->fsService->writeFile($file, $this->fakerService->getLorem()->randomText());
+        $this->fsService->writeFile($file, $this->fakerService->getLoremGenerator()->randomText());
     }
 
     #[DataProvider('dataProviderTouchDirectory')]
     public function testTouchDirectory(?int $modificationTime = null, ?int $accessTime = null): void
     {
-        $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
+        $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
 
         $this->fsService->makeDirectory($directory);
 
@@ -261,7 +261,7 @@ class FsServiceTest extends FsTestCase
     #[DataProvider('dataProviderTouchFile')]
     public function testTouchFile(?int $modificationTime = null, ?int $accessTime = null): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $time = time();
 
@@ -304,7 +304,7 @@ class FsServiceTest extends FsTestCase
         $this->expectException(FsException::class);
         $this->expectExceptionMessage('The modification time must be greater than or equal to 0.');
 
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $this->fsService->touch($file, -1);
     }
@@ -314,7 +314,7 @@ class FsServiceTest extends FsTestCase
         $this->expectException(FsException::class);
         $this->expectExceptionMessage('The access time must be greater than or equal to 0.');
 
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $this->fsService->touch($file, 0, -1);
     }
@@ -324,7 +324,7 @@ class FsServiceTest extends FsTestCase
         $this->expectException(FsException::class);
         $this->expectExceptionMessage('The modification time must be greater than or equal to 0, when the access time is greater than or equal to 0.');
 
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $this->fsService->touch($file, null, 0);
     }
@@ -332,12 +332,12 @@ class FsServiceTest extends FsTestCase
     #[DataProvider('dataProviderTouchPathMustExist')]
     public function testTouchPathMustExist(bool $isDirectory): void
     {
-        $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
+        $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
 
         if ($isDirectory) {
-            $path = sprintf('%s/%s', $directory, $this->fakerService->getFs()->randomDirectory());
+            $path = sprintf('%s/%s', $directory, $this->fakerService->getFsGenerator()->randomDirectory());
         } else {
-            $path = sprintf('%s/%s', $directory, $this->fakerService->getFs()->randomFile());
+            $path = sprintf('%s/%s', $directory, $this->fakerService->getFsGenerator()->randomFile());
         }
 
         $this->expectException(FsException::class);
@@ -363,16 +363,16 @@ class FsServiceTest extends FsTestCase
 
     public function testRemoveDirectory(): void
     {
-        $directory1 = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
-        $file1 = sprintf('%s/%s', $directory1, $this->fakerService->getFs()->randomFile());
-        $directory2 = sprintf('%s/%s', $directory1, $this->fakerService->getFs()->randomDirectory());
-        $file2 = sprintf('%s/%s', $directory2, $this->fakerService->getFs()->randomFile());
-        $directory3 = sprintf('%s/%s', $directory2, $this->fakerService->getFs()->randomDirectory());
+        $directory1 = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
+        $file1 = sprintf('%s/%s', $directory1, $this->fakerService->getFsGenerator()->randomFile());
+        $directory2 = sprintf('%s/%s', $directory1, $this->fakerService->getFsGenerator()->randomDirectory());
+        $file2 = sprintf('%s/%s', $directory2, $this->fakerService->getFsGenerator()->randomFile());
+        $directory3 = sprintf('%s/%s', $directory2, $this->fakerService->getFsGenerator()->randomDirectory());
 
         $this->fsService->makeDirectory($directory1);
-        $this->fsService->writeFile($file1, $this->fakerService->getLorem()->randomText());
+        $this->fsService->writeFile($file1, $this->fakerService->getLoremGenerator()->randomText());
         $this->fsService->makeDirectory($directory2);
-        $this->fsService->writeFile($file2, $this->fakerService->getLorem()->randomText());
+        $this->fsService->writeFile($file2, $this->fakerService->getLoremGenerator()->randomText());
         $this->fsService->makeDirectory($directory3);
 
         $this->fsService->remove($directory1);
@@ -386,9 +386,9 @@ class FsServiceTest extends FsTestCase
 
     public function testRemoveFile(): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
-        $this->fsService->writeFile($file, $this->fakerService->getLorem()->randomText());
+        $this->fsService->writeFile($file, $this->fakerService->getLoremGenerator()->randomText());
 
         $this->fsService->remove($file);
 
@@ -399,9 +399,9 @@ class FsServiceTest extends FsTestCase
     public function testRemovePathMustExist(bool $isDirectory): void
     {
         if ($isDirectory) {
-            $path = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
+            $path = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
         } else {
-            $path = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+            $path = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
         }
 
         $this->expectException(FsException::class);
@@ -427,22 +427,22 @@ class FsServiceTest extends FsTestCase
 
     public function testCopyDirectory(): void
     {
-        $sourceDirectory1 = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
-        $sourceFile1 = sprintf('%s/%s', $sourceDirectory1, $this->fakerService->getFs()->randomFile());
-        $sourceDirectory2 = sprintf('%s/%s', $sourceDirectory1, $this->fakerService->getFs()->randomDirectory());
-        $sourceFile2 = sprintf('%s/%s', $sourceDirectory2, $this->fakerService->getFs()->randomFile());
-        $sourceDirectory3 = sprintf('%s/%s', $sourceDirectory2, $this->fakerService->getFs()->randomDirectory());
+        $sourceDirectory1 = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
+        $sourceFile1 = sprintf('%s/%s', $sourceDirectory1, $this->fakerService->getFsGenerator()->randomFile());
+        $sourceDirectory2 = sprintf('%s/%s', $sourceDirectory1, $this->fakerService->getFsGenerator()->randomDirectory());
+        $sourceFile2 = sprintf('%s/%s', $sourceDirectory2, $this->fakerService->getFsGenerator()->randomFile());
+        $sourceDirectory3 = sprintf('%s/%s', $sourceDirectory2, $this->fakerService->getFsGenerator()->randomDirectory());
 
-        $targetDirectory1 = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
+        $targetDirectory1 = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
         $targetFile1 = str_replace($sourceDirectory1, $targetDirectory1, $sourceFile1);
         $targetDirectory2 = str_replace($sourceDirectory1, $targetDirectory1, $sourceDirectory2);
         $targetFile2 = str_replace($sourceDirectory2, $targetDirectory2, $sourceFile2);
         $targetDirectory3 = str_replace($sourceDirectory2, $targetDirectory2, $sourceDirectory3);
 
         $this->fsService->makeDirectory($sourceDirectory1);
-        $this->fsService->writeFile($sourceFile1, $this->fakerService->getLorem()->randomText());
+        $this->fsService->writeFile($sourceFile1, $this->fakerService->getLoremGenerator()->randomText());
         $this->fsService->makeDirectory($sourceDirectory2);
-        $this->fsService->writeFile($sourceFile2, $this->fakerService->getLorem()->randomText());
+        $this->fsService->writeFile($sourceFile2, $this->fakerService->getLoremGenerator()->randomText());
         $this->fsService->makeDirectory($sourceDirectory3);
 
         $this->fsService->copy($sourceDirectory1, $targetDirectory1);
@@ -466,10 +466,10 @@ class FsServiceTest extends FsTestCase
 
     public function testCopyFile(): void
     {
-        $sourceFile = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
-        $targetFile = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $sourceFile = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
+        $targetFile = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
-        $this->fsService->writeFile($sourceFile, $this->fakerService->getLorem()->randomText());
+        $this->fsService->writeFile($sourceFile, $this->fakerService->getLoremGenerator()->randomText());
 
         $this->fsService->copy($sourceFile, $targetFile);
 
@@ -482,11 +482,11 @@ class FsServiceTest extends FsTestCase
     public function testCopySourcePathMustExist(bool $isDirectory): void
     {
         if ($isDirectory) {
-            $sourcePath = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
-            $targetPath = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
+            $sourcePath = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
+            $targetPath = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
         } else {
-            $sourcePath = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
-            $targetPath = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+            $sourcePath = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
+            $targetPath = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
         }
 
         $this->expectException(FsException::class);
@@ -514,17 +514,17 @@ class FsServiceTest extends FsTestCase
     public function testCopyTargetPathAlreadyExists(bool $isDirectory): void
     {
         if ($isDirectory) {
-            $sourcePath = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
-            $targetPath = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
+            $sourcePath = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
+            $targetPath = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
 
             $this->fsService->makeDirectory($sourcePath);
             $this->fsService->makeDirectory($targetPath);
         } else {
-            $sourcePath = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
-            $targetPath = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+            $sourcePath = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
+            $targetPath = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
-            $this->fsService->writeFile($sourcePath, $this->fakerService->getLorem()->randomText());
-            $this->fsService->writeFile($targetPath, $this->fakerService->getLorem()->randomText());
+            $this->fsService->writeFile($sourcePath, $this->fakerService->getLoremGenerator()->randomText());
+            $this->fsService->writeFile($targetPath, $this->fakerService->getLoremGenerator()->randomText());
         }
 
         $this->expectException(FsException::class);
@@ -551,18 +551,18 @@ class FsServiceTest extends FsTestCase
     #[DataProvider('dataProviderCopyTargetPathMustExist')]
     public function testCopyTargetPathMustExist(bool $isDirectory): void
     {
-        $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
+        $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
 
         if ($isDirectory) {
-            $sourcePath = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
-            $targetPath = sprintf('%s/%s', $directory, $this->fakerService->getFs()->randomDirectory());
+            $sourcePath = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
+            $targetPath = sprintf('%s/%s', $directory, $this->fakerService->getFsGenerator()->randomDirectory());
 
             $this->fsService->makeDirectory($sourcePath);
         } else {
-            $sourcePath = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
-            $targetPath = sprintf('%s/%s', $directory, $this->fakerService->getFs()->randomFile());
+            $sourcePath = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
+            $targetPath = sprintf('%s/%s', $directory, $this->fakerService->getFsGenerator()->randomFile());
 
-            $this->fsService->writeFile($sourcePath, $this->fakerService->getLorem()->randomText());
+            $this->fsService->writeFile($sourcePath, $this->fakerService->getLoremGenerator()->randomText());
         }
 
         $this->expectException(FsException::class);
@@ -588,8 +588,8 @@ class FsServiceTest extends FsTestCase
 
     public function testMoveDirectory(): void
     {
-        $sourceDirectory = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
-        $targetDirectory = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
+        $sourceDirectory = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
+        $targetDirectory = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
 
         $this->fsService->makeDirectory($sourceDirectory);
 
@@ -604,10 +604,10 @@ class FsServiceTest extends FsTestCase
 
     public function testMoveFile(): void
     {
-        $sourceFile = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
-        $targetFile = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $sourceFile = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
+        $targetFile = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
-        $this->fsService->writeFile($sourceFile, $this->fakerService->getLorem()->randomText());
+        $this->fsService->writeFile($sourceFile, $this->fakerService->getLoremGenerator()->randomText());
 
         $expectedMode = $this->fsService->getMode($sourceFile);
 
@@ -622,11 +622,11 @@ class FsServiceTest extends FsTestCase
     public function testMoveSourcePathMustExist(bool $isDirectory): void
     {
         if ($isDirectory) {
-            $sourcePath = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
-            $targetPath = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
+            $sourcePath = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
+            $targetPath = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
         } else {
-            $sourcePath = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
-            $targetPath = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+            $sourcePath = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
+            $targetPath = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
         }
 
         $this->expectException(FsException::class);
@@ -654,17 +654,17 @@ class FsServiceTest extends FsTestCase
     public function testMoveTargetPathAlreadyExists(bool $isDirectory): void
     {
         if ($isDirectory) {
-            $sourcePath = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
-            $targetPath = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
+            $sourcePath = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
+            $targetPath = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
 
             $this->fsService->makeDirectory($sourcePath);
             $this->fsService->makeDirectory($targetPath);
         } else {
-            $sourcePath = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
-            $targetPath = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+            $sourcePath = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
+            $targetPath = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
-            $this->fsService->writeFile($sourcePath, $this->fakerService->getLorem()->randomText());
-            $this->fsService->writeFile($targetPath, $this->fakerService->getLorem()->randomText());
+            $this->fsService->writeFile($sourcePath, $this->fakerService->getLoremGenerator()->randomText());
+            $this->fsService->writeFile($targetPath, $this->fakerService->getLoremGenerator()->randomText());
         }
 
         $this->expectException(FsException::class);
@@ -691,18 +691,18 @@ class FsServiceTest extends FsTestCase
     #[DataProvider('dataProviderMoveTargetPathMustExist')]
     public function testMoveTargetPathMustExist(bool $isDirectory): void
     {
-        $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
+        $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
 
         if ($isDirectory) {
-            $sourcePath = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
-            $targetPath = sprintf('%s/%s', $directory, $this->fakerService->getFs()->randomDirectory());
+            $sourcePath = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
+            $targetPath = sprintf('%s/%s', $directory, $this->fakerService->getFsGenerator()->randomDirectory());
 
             $this->fsService->makeDirectory($sourcePath);
         } else {
-            $sourcePath = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
-            $targetPath = sprintf('%s/%s', $directory, $this->fakerService->getFs()->randomFile());
+            $sourcePath = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
+            $targetPath = sprintf('%s/%s', $directory, $this->fakerService->getFsGenerator()->randomFile());
 
-            $this->fsService->writeFile($sourcePath, $this->fakerService->getLorem()->randomText());
+            $this->fsService->writeFile($sourcePath, $this->fakerService->getLoremGenerator()->randomText());
         }
 
         $this->expectException(FsException::class);
@@ -728,9 +728,9 @@ class FsServiceTest extends FsTestCase
 
     public function testGetMimeContentType(): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
-        $this->fsService->writeFile($file, $this->fakerService->getLorem()->randomText());
+        $this->fsService->writeFile($file, $this->fakerService->getLoremGenerator()->randomText());
 
         $mimeContentType = $this->fsService->getMimeContentType($file);
 
@@ -739,7 +739,7 @@ class FsServiceTest extends FsTestCase
 
     public function testGetMimeContentTypePathMustBeFile(): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $this->expectException(FsException::class);
         $this->expectExceptionMessage('The path must be a file.');
@@ -749,7 +749,7 @@ class FsServiceTest extends FsTestCase
 
     public function testGetModeOfDirectory(): void
     {
-        $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
+        $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
 
         $expectedMode = 0775;
 
@@ -762,11 +762,11 @@ class FsServiceTest extends FsTestCase
 
     public function testGetModeOfFile(): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $expectedMode = 0664;
 
-        $this->fsService->writeFile($file, $this->fakerService->getLorem()->randomText(), $expectedMode);
+        $this->fsService->writeFile($file, $this->fakerService->getLoremGenerator()->randomText(), $expectedMode);
 
         $mode = $this->fsService->getMode($file);
 
@@ -777,9 +777,9 @@ class FsServiceTest extends FsTestCase
     public function testGetModePathMustExist(bool $isDirectory): void
     {
         if ($isDirectory) {
-            $path = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
+            $path = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
         } else {
-            $path = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+            $path = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
         }
 
         $this->expectException(FsException::class);
@@ -805,7 +805,7 @@ class FsServiceTest extends FsTestCase
 
     public function testChangeModeOfDirectory(): void
     {
-        $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
+        $directory = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
 
         $expectedMode = 0770;
 
@@ -818,11 +818,11 @@ class FsServiceTest extends FsTestCase
 
     public function testChangeModeOfFile(): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $expectedMode = 0660;
 
-        $this->fsService->writeFile($file, $this->fakerService->getLorem()->randomText(), 0664);
+        $this->fsService->writeFile($file, $this->fakerService->getLoremGenerator()->randomText(), 0664);
 
         $this->fsService->changeMode($file, $expectedMode);
 
@@ -833,9 +833,9 @@ class FsServiceTest extends FsTestCase
     public function testChangeModePathMustExist(bool $isDirectory): void
     {
         if ($isDirectory) {
-            $path = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
+            $path = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
         } else {
-            $path = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+            $path = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
         }
 
         $this->expectException(FsException::class);
@@ -861,18 +861,18 @@ class FsServiceTest extends FsTestCase
 
     public function testGetSizeOfDirectory(): void
     {
-        $directory1 = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
-        $file1 = sprintf('%s/%s', $directory1, $this->fakerService->getFs()->randomFile());
-        $directory2 = sprintf('%s/%s', $directory1, $this->fakerService->getFs()->randomDirectory());
-        $file2 = sprintf('%s/%s', $directory2, $this->fakerService->getFs()->randomFile());
-        $directory3 = sprintf('%s/%s', $directory2, $this->fakerService->getFs()->randomDirectory());
+        $directory1 = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
+        $file1 = sprintf('%s/%s', $directory1, $this->fakerService->getFsGenerator()->randomFile());
+        $directory2 = sprintf('%s/%s', $directory1, $this->fakerService->getFsGenerator()->randomDirectory());
+        $file2 = sprintf('%s/%s', $directory2, $this->fakerService->getFsGenerator()->randomFile());
+        $directory3 = sprintf('%s/%s', $directory2, $this->fakerService->getFsGenerator()->randomDirectory());
 
         $expectedSize = 32;
 
         $this->fsService->makeDirectory($directory1);
-        $this->fsService->writeFile($file1, $this->fakerService->getCore()->randomString($expectedSize / 2));
+        $this->fsService->writeFile($file1, $this->fakerService->getDataTypeGenerator()->randomString($expectedSize / 2));
         $this->fsService->makeDirectory($directory2);
-        $this->fsService->writeFile($file2, $this->fakerService->getCore()->randomString($expectedSize / 2));
+        $this->fsService->writeFile($file2, $this->fakerService->getDataTypeGenerator()->randomString($expectedSize / 2));
         $this->fsService->makeDirectory($directory3);
 
         $size = $this->fsService->getSize($directory1);
@@ -882,11 +882,11 @@ class FsServiceTest extends FsTestCase
 
     public function testGetSizeOfFile(): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         $expectedSize = 32;
 
-        $this->fsService->writeFile($file, $this->fakerService->getCore()->randomString($expectedSize));
+        $this->fsService->writeFile($file, $this->fakerService->getDataTypeGenerator()->randomString($expectedSize));
 
         $size = $this->fsService->getSize($file);
 
@@ -897,9 +897,9 @@ class FsServiceTest extends FsTestCase
     public function testGetSizePathMustExist(bool $isDirectory): void
     {
         if ($isDirectory) {
-            $path = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomDirectory());
+            $path = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomDirectory());
         } else {
-            $path = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+            $path = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
         }
 
         $this->expectException(FsException::class);
@@ -926,10 +926,10 @@ class FsServiceTest extends FsTestCase
     #[DataProvider('dataProviderOpenStream')]
     public function testOpenStream(Mode $mode): void
     {
-        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFs()->randomFile());
+        $file = sprintf('%s/%s', $this->directory, $this->fakerService->getFsGenerator()->randomFile());
 
         if (Mode::Read === $mode) {
-            $this->fsService->writeFile($file, $this->fakerService->getLorem()->randomText());
+            $this->fsService->writeFile($file, $this->fakerService->getLoremGenerator()->randomText());
         }
 
         $stream = $this->fsService->openStream($file, $mode);
