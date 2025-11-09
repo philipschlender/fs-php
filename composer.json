@@ -28,11 +28,16 @@
         {
             "type": "github",
             "url": "https://github.com/philipschlender/faker-php.git"
+        },
+        {
+            "type": "github",
+            "url": "https://github.com/philipschlender/io-php.git"
         }
     ],
     "require": {
         "php": ">=8.4",
-        "ext-fileinfo": "*"
+        "ext-fileinfo": "*",
+        "philipschlender/io-php": "^1.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.89",

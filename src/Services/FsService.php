@@ -2,10 +2,11 @@
 
 namespace Fs\Services;
 
-use Fs\Enumerations\Mode;
 use Fs\Exceptions\FsException;
 use Fs\Models\Stream;
 use Fs\Models\StreamInterface;
+use Io\Enumerations\Mode;
+use Io\Exceptions\IoException;
 
 class FsService implements FsServiceInterface
 {
@@ -86,13 +87,17 @@ class FsService implements FsServiceInterface
             throw new FsException('The path must be a file.');
         }
 
-        $stream = $this->openStream($path, Mode::Read);
+        try {
+            $stream = $this->openStream($path, Mode::Read);
 
-        $data = $stream->read();
+            $data = $stream->read();
 
-        $stream->close();
+            $stream->close();
 
-        return $data;
+            return $data;
+        } catch (IoException $exception) {
+            throw new FsException($exception->getMessage(), 0, $exception);
+        }
     }
 
     /**
@@ -110,11 +115,15 @@ class FsService implements FsServiceInterface
             throw new FsException('The path must exist.');
         }
 
-        $stream = $this->openStream($path, Mode::Write);
+        try {
+            $stream = $this->openStream($path, Mode::Write);
 
-        $stream->write($data);
+            $stream->write($data);
 
-        $stream->close();
+            $stream->close();
+        } catch (IoException $exception) {
+            throw new FsException($exception->getMessage(), 0, $exception);
+        }
 
         $this->changeMode($path, $mode);
     }
@@ -298,7 +307,11 @@ class FsService implements FsServiceInterface
      */
     public function openStream(string $path, Mode $mode): StreamInterface
     {
-        return new Stream($path, $mode);
+        try {
+            return new Stream($path, $mode);
+        } catch (IoException $exception) {
+            throw new FsException($exception->getMessage(), 0, $exception);
+        }
     }
 
     /**
