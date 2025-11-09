@@ -4,8 +4,75 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "af4bbae72cb0fbbf33c16cf07c68ef8b",
-    "packages": [],
+    "content-hash": "51cc127dbd2901571bc70fc7512c8f56",
+    "packages": [
+        {
+            "name": "philipschlender/io-php",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/philipschlender/io-php.git",
+                "reference": "6f62d650acbec46a68aa6873e5ba00112f2a62e8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/philipschlender/io-php/zipball/6f62d650acbec46a68aa6873e5ba00112f2a62e8",
+                "reference": "6f62d650acbec46a68aa6873e5ba00112f2a62e8",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.4"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.89",
+                "philipschlender/faker-php": "^3.1",
+                "phpstan/phpstan": "^2.1",
+                "phpunit/phpunit": "^12.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Io\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "php-cs-fixer": [
+                    "./vendor/bin/php-cs-fixer fix"
+                ],
+                "phpstan": [
+                    "./vendor/bin/phpstan"
+                ],
+                "phpunit": [
+                    "./vendor/bin/phpunit"
+                ],
+                "phpunit-coverage": [
+                    "./vendor/bin/phpunit --coverage-text"
+                ],
+                "phpunit-coverage-html": [
+                    "./vendor/bin/phpunit --coverage-html coverage"
+                ],
+                "qa": [
+                    "@php-cs-fixer",
+                    "@phpstan",
+                    "@phpunit"
+                ]
+            },
+            "authors": [
+                {
+                    "name": "Philip Schlender"
+                }
+            ],
+            "support": {
+                "source": "https://github.com/philipschlender/io-php/tree/1.0.0"
+            },
+            "time": "2025-11-09T15:32:26+00:00"
+        }
+    ],
     "packages-dev": [
         {
             "name": "clue/ndjson-react",

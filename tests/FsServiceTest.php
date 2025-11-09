@@ -2,11 +2,11 @@
 
 namespace Tests;
 
-use Fs\Enumerations\Mode;
 use Fs\Exceptions\FsException;
 use Fs\Models\Stream;
 use Fs\Services\FsService;
 use Fs\Services\FsServiceInterface;
+use Io\Enumerations\Mode;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class FsServiceTest extends FsTestCase

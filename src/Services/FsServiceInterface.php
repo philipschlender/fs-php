@@ -2,9 +2,9 @@
 
 namespace Fs\Services;
 
-use Fs\Enumerations\Mode;
 use Fs\Exceptions\FsException;
 use Fs\Models\StreamInterface;
+use Io\Enumerations\Mode;
 
 interface FsServiceInterface
 {
